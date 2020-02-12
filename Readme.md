@@ -29,13 +29,18 @@ The modules within this package must be imported into and configured from a code
 ```
 import relay from "@clearblade/one-way-sync/edge/edge-message-relay";
 
-export function edgeMessageRelay(req: CbServer.BasicReq, resp: CbServer.Resp) {
+function edgeMessageRelay(req: CbServer.BasicReq, resp: CbServer.Resp) {
   relay({
     req: req,
     resp: resp,
-    topics: ['one', 'two']
+    topics: ['one', 'two'],
+    cacheName: 'edgeDataSharedCache', // optional cache name
+    collectionName: 'edge_relay_cache' // optional collection name
   });
 }
+
+// @ts-ignore
+global.edgeMessageRelay = edgeMessageRelay;
 ```
 
 ### Edge Connected Service
@@ -43,12 +48,12 @@ export function edgeMessageRelay(req: CbServer.BasicReq, resp: CbServer.Resp) {
 ```
 import onConnect from "@clearblade/one-way-sync/edge/edge-disconnected";
 
-export function edgeConnected(req: CbServer.BasicReq, resp: CbServer.Resp) {
+function edgeConnected(req: CbServer.BasicReq, resp: CbServer.Resp) {
   onConnect({
     req: req,
     resp: resp,
-    cacheName: 'edgeDataSharedCache',
-    collectionName: 'edge_relay_cache'
+    cacheName: 'edgeDataSharedCache', // optional cache name
+    collectionName: 'edge_relay_cache' // optional collection name
   });
 }
 
@@ -61,11 +66,12 @@ global.edgeConnected = edgeConnected;
 ```
 import onDisconnect from "@clearblade/one-way-sync/edge/edge-disconnected";
 
-export function edgeDisconnected(req: CbServer.BasicReq, resp: CbServer.Resp) {
+function edgeDisconnected(req: CbServer.BasicReq, resp: CbServer.Resp) {
   onDisconnect({
     req: req,
     resp: resp,
-    cacheName: 'edgeDataSharedCache'
+    cacheName: 'edgeDataSharedCache', // optional cache name
+    collectionName: 'edge_relay_cache' // optional collection name
   });
 }
 
