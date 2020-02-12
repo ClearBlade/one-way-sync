@@ -4,8 +4,6 @@
 
 This repository provides modules for performing one-way sync from ClearBlade edge to ClearBlade platform.
 
-`TODO: add one-way sync from platform to edge`
-
 # Installation
 
 `npm i --save @clearblade/one-way-sync`
@@ -78,3 +76,7 @@ function edgeDisconnected(req: CbServer.BasicReq, resp: CbServer.Resp) {
 //@ts-ignore
 global.edgeDisconnected = edgeDisconnected;
 ```
+
+# TODO
+
+1. add one-way sync from platform to edge
