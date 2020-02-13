@@ -6,7 +6,7 @@ interface EdgeMessageRelayConfig {
     req: CbServer.BasicReq;
     resp: CbServer.Resp;
     topics: string[];
-    getRelayTopicSuffix: (incomingMsgTopic: string) => string | undefined;
+    getRelayTopicSuffix?: (incomingMsgTopic: string) => string | undefined;
     runWaitLoop?: (cb: () => void) => void;
     cacheName?: string;
     collectionName?: string;
@@ -16,7 +16,7 @@ function edgeMessageRelay({
     req,
     resp,
     topics,
-    getRelayTopicSuffix,
+    getRelayTopicSuffix = topic => topic,
     runWaitLoop = cb => {
         // eslint-disable-next-line no-constant-condition
         while (true) {
