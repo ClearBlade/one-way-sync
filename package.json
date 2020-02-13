@@ -6,9 +6,10 @@
         "test": "jest",
         "test:watch": "jest --watchAll",
         "prepublish": "tsc",
-        "prebuild": "del lib/",
+        "prebuild": "del dist/",
         "build": "tsc",
-        "postbuild": "cpy 'static/promise-polyfill/**' ../lib/ --cwd=src/ --parents",
+        "dist": "cp package.json dist && cp Readme.md dist && cd dist && npm publish",
+        "postbuild": "cpy 'static/promise-polyfill/**' ../dist/ --cwd=src/ --parents",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix"
     },
