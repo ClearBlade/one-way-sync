@@ -33,4 +33,5 @@ global.ClearBlade = {
             return;
         },
     }),
+    isEdge: () => false,
 };
