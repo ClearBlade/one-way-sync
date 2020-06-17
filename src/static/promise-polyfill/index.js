@@ -29,6 +29,10 @@
 
 (function () {
     if (typeof Promise !== "undefined") {
+        // this allows any code that calls Promise.runQueue to function on newer platform instances (>= 9.3.0) where the promise object is available
+        // eventually this entire polyfill should be removed and all calls to Promise.runQueue should be removed when all instances that are running asset monitor 
+        // have been updated to version >= 9.3.0
+        Promise.runQueue = function() {}
         return;
     }
     // As far as the specification goes, almost all Promise settling is via
