@@ -79,6 +79,11 @@ describe('edge-message-relay', () => {
             cb(null, topic);
         });
 
+        // todo: remove this once we are no longer using promise-polyfill
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+        // @ts-ignore
+        Promise.runQueue();
+
         // have to setTimeout unfortunately, this allows the subscribe promises to resolve then I can call the setIntervalMock
         setTimeout(() => {
             expect(setIntervalMock).toHaveBeenCalledTimes(1);
