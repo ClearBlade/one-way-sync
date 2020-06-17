@@ -1,4 +1,4 @@
-import '../../static/promise-polyfill';
+import '@clearblade/promise-polyfill';
 import { subscriber } from '@clearblade/messaging-utils';
 import { DEFAULT_EDGE_RELAY_CACHE_NAME, DEFAULT_EDGE_RELAY_CACHE_COLLECTION_NAME } from '../shared';
 

@@ -9,7 +9,6 @@
         "prebuild": "del dist/",
         "build": "tsc",
         "dist": "cp package.json dist && cp Readme.md dist && cd dist && npm publish",
-        "postbuild": "cpy 'static/promise-polyfill/**' ../dist/ --cwd=src/ --parents",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix"
     },
@@ -67,6 +66,7 @@
     },
     "dependencies": {
         "@clearblade/messaging-utils": "^1.0.2",
+        "@clearblade/promise-polyfill": "^1.0.0",
         "core-js": "^3.6.4"
     },
     "repository": {
