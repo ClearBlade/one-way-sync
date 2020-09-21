@@ -60,12 +60,12 @@
         "target": "es5",
         "module": "commonjs",
         "declaration": true,
-        "rootDir": "./src",
+        "rootDir": "./",
         "outDir": "./dist",
         "strict": true,
         "forceConsistentCasingInFileNames": true
     },
     "files": ["utils/global.d.ts", "node_modules/@clearblade/code-service-types/index.d.ts"],
-    "include": ["src"],
-    "exclude": ["node_modules", "**/tests/*", "**/__mocks__/*"]
+    "include": ["src", "utils"],
+    "exclude": ["node_modules", "**/__mocks__/*"]
 }
