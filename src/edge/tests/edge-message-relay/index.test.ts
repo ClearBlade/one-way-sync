@@ -1,19 +1,13 @@
 import edgeMessageRelay from '../../edge-message-relay';
 import { EdgeMessageRelayConfig } from '../../edge-message-relay';
+import { MockMQTT } from './test-utils/MockMQTT';
 
 // https://github.com/facebook/jest/issues/2157
 const flushPromises = () => new Promise(res => setImmediate(res));
 
-let messageQueues: { [topic: string]: Array<CbServer.MQTTMessage | string> } = {};
 const edgeRelayCacheCollection: Array<{ topic: string; payload: string; timestamp: string }> = [];
 const edgeRelayCache: { [key: string]: unknown } = {};
 const TOPICS = ['$share/EdgeRelayGroup/_dbupdate/_monitor/_asset/testAsset/location'];
-
-const publishMock = jest.fn((topic: string, message: CbServer.MQTTMessage) => {
-  if (!messageQueues[topic]) messageQueues[topic] = [];
-  messageQueues[topic].push(message);
-  return Promise.resolve();
-});
 
 const getCacheMock = jest.fn((key: string, callback: CbServer.CbCallback) => {
   if (Object.keys(edgeRelayCache).findIndex(val => val === key) !== -1) {
@@ -39,19 +33,6 @@ describe('edge-message-relay', () => {
   beforeAll(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
-    global.MQTT.Client = () => ({
-      subscribe: (topic: string, onMessage: (topic: string, message: CbServer.MQTTMessage) => void) => {
-        return new Promise(() => {
-          while (messageQueues[topic].length > 0) {
-            const message = messageQueues[topic].shift();
-            if (message) onMessage(topic, message as CbServer.MQTTMessage);
-          }
-        });
-      },
-      publish: publishMock,
-    });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
     global.ClearBlade.Cache = () => ({
       get: getCacheMock,
       set: setCacheMock,
@@ -64,9 +45,7 @@ describe('edge-message-relay', () => {
   });
 
   beforeEach(() => {
-    messageQueues = {};
     edgeRelayCache['edgeIsConnected'] = true;
-    TOPICS.forEach(topic => (messageQueues[topic] = []));
 
     getCacheMock.mockClear();
     setCacheMock.mockClear();
@@ -85,38 +64,32 @@ describe('edge-message-relay', () => {
   });
 
   it('Edge connected relays message', () => {
-    const payload = 'test message';
-    const message: CbServer.MQTTMessage = {
-      qos: 0,
-      retain: false,
-      duplicate: false,
-      payload,
-    };
+    const mqttMock = new MockMQTT();
 
-    messageQueues[TOPICS[0]].push(message);
+    const payload = 'test message';
+    mqttMock.addMessageToTopicQueue(TOPICS[0], payload);
+
     edgeMessageRelay(edgeMessageRelayConfig);
 
     return flushPromises().then(() => {
-      expect(messageQueues['_dbupdate/_monitor/_asset/testAsset/location/_platform'][0]).toEqual(payload);
+      expect(mqttMock.messageQueues['_dbupdate/_monitor/_asset/testAsset/location/_platform'][0].payload).toEqual(
+        payload,
+      );
     });
   });
 
   it('Edge disconnected adds message to relay cache collection', () => {
+    const mqttMock = new MockMQTT();
+
     const payload = 'test message';
-    const message: CbServer.MQTTMessage = {
-      qos: 0,
-      retain: false,
-      duplicate: false,
-      payload,
-    };
+    mqttMock.addMessageToTopicQueue(TOPICS[0], payload);
 
     edgeRelayCache['edgeIsConnected'] = false;
-    messageQueues[TOPICS[0]].push(message);
 
     edgeMessageRelay(edgeMessageRelayConfig);
 
     return flushPromises().then(() => {
-      expect(messageQueues['_dbupdate/_monitor/_asset/testAsset/location/_platform']).toBeFalsy();
+      expect(mqttMock.messageQueues['_dbupdate/_monitor/_asset/testAsset/location/_platform']).toBeFalsy();
       expect(edgeRelayCacheCollection[0].payload).toEqual(payload);
     });
   });
