@@ -15,6 +15,7 @@ From there, you will simply need to create a stream service on your platform in 
 This package must be configured with the following assets:
 
 -   The [ClearBlade library](https://github.com/ClearBlade/native-libraries/blob/master/clearblade.md) must be imported as a dependency of each code service.
+-   The [MQTT library](https://github.com/ClearBlade/native-libraries/blob/master/mqtt.md) must be imported as a dependency of each code service.
 -   A [shared cache](https://docs.clearblade.com/v/4/shared_cache/) must be created in order to allow for checking if an edge is connected or disconnected from the platform. The default name is `edgeDataSharedCache` but the name can be configured with the `cacheName` parameter. A TTL of 1 hour is recommended.
 -   A [collection](https://docs.clearblade.com/v/4/collections/) must be created in order to store a queue of messages if an edge is disconnected from the platform. The default name is `edge_relay_cache` but the name can be configured with the `cacheName` parameter. This collection will require the below columns:
 
